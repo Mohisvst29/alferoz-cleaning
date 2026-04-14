@@ -2,28 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import FileUploader from '@/components/admin/FileUploader';
-import { Plus, Search, Loader2 } from 'lucide-react';
+import { Plus, Search, Loader2, X, Save } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type Article = {
-  id?: string;
-  title: string;
-  slug: string;
-  content: string;
-  excerpt: string;
-  image: string;
-  status: string;
-};
-
 export default function AdminArticlesPage() {
-
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [articles, setArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-
-  const [formData, setFormData] = useState<Article>({
+  
+  const [formData, setFormData] = useState({
     id: '',
     title: '',
     slug: '',
@@ -33,32 +22,20 @@ export default function AdminArticlesPage() {
     status: 'published'
   });
 
-  useEffect(() => {
-    fetchArticles();
-  }, []);
+  useEffect(() => { fetchArticles(); }, []);
 
   const fetchArticles = async () => {
-
     setLoading(true);
-
     const res = await fetch('/api/articles');
-
     const data = await res.json();
-
     setArticles(Array.isArray(data) ? data : []);
-
     setLoading(false);
-
   };
 
-  const handleOpenModal = (article?: Article) => {
-
+  const handleOpenModal = (article: any = null) => {
     if (article) {
-
       setFormData(article);
-
     } else {
-
       setFormData({
         id: '',
         title: '',
@@ -68,123 +45,87 @@ export default function AdminArticlesPage() {
         image: '',
         status: 'published'
       });
-
     }
-
     setIsModalOpen(true);
-
   };
 
   const handleTitleChange = (val: string) => {
-
-    const slug =
-      val
-        .toLowerCase()
-        .replace(/[\s\W-]+/g, '-');
+    const slug = val.toLowerCase().replace(/[\s\W-]+/g, '-');
 
     setFormData({
-
       ...formData,
-
       title: val,
-
-      slug:
-        formData.id
-          ? formData.slug
-          : slug
-
+      slug: formData.id ? formData.slug : slug
     });
-
   };
 
   const handleSave = async () => {
-
     setSaving(true);
 
-    const method =
-      formData.id
-        ? 'PUT'
-        : 'POST';
+    const method = formData.id ? 'PUT' : 'POST';
 
-    const payload: Partial<Article> =
-      formData.id
-        ? formData
-        : {
-
-            title: formData.title,
-            slug: formData.slug,
-            content: formData.content,
-            excerpt: formData.excerpt,
-            image: formData.image,
-            status: formData.status
-
-          };
+    // Construct payload without id if it's a new article to satisfy TypeScript
+    const payload = formData.id
+      ? formData
+      : {
+          title: formData.title,
+          slug: formData.slug,
+          content: formData.content,
+          excerpt: formData.excerpt,
+          image: formData.image,
+          status: formData.status
+        };
 
     await fetch('/api/articles', {
-
       method,
-
-      headers: {
-
+      headers: { 
         'Content-Type': 'application/json',
-
-        Authorization:
-          `Bearer ${
-            localStorage.getItem('admin_token')
-          }`
-
+        'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
       },
-
-      body: JSON.stringify(payload)
-
+      body: JSON.stringify(payload),
     });
 
     setSaving(false);
-
     setIsModalOpen(false);
-
     fetchArticles();
-
   };
 
-  const handleDelete = async (id?: string) => {
+  const handleToggleStatus = async (id: string, currentStatus: string) => {
+    const newStatus = currentStatus === 'published' ? 'draft' : 'published';
 
-    if (!id) return;
+    await fetch('/api/articles', {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
+      },
+      body: JSON.stringify({
+        id,
+        status: newStatus
+      }),
+    });
 
-    if (confirm('هل تريد حذف المقال؟')) {
+    fetchArticles();
+  };
 
-      await fetch(`/api/articles?id=${id}`, {
-
+  const handleDelete = async (id: string) => {
+    if (confirm('هل أنت متأكد من حذف هذا المقال؟')) {
+      await fetch(`/api/articles?id=${id}`, { 
         method: 'DELETE',
-
         headers: {
-
-          Authorization:
-            `Bearer ${
-              localStorage.getItem('admin_token')
-            }`
-
+          'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
         }
-
       });
 
       fetchArticles();
-
     }
-
   };
 
-  const filteredArticles =
-    articles.filter(a =>
-      a?.title
-        ?.toLowerCase()
-        .includes(
-          searchTerm.toLowerCase()
-        )
-    );
+  const filteredArticles = articles.filter(a =>
+    a?.title?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-
     <div>
 
       <div
@@ -195,22 +136,27 @@ export default function AdminArticlesPage() {
           marginBottom: '40px'
         }}
       >
+        <div>
+          <h1
+            style={{
+              fontSize: '32px',
+              fontWeight: 900,
+              marginBottom: '8px'
+            }}
+          >
+            المدونة والمقالات
+          </h1>
 
-        <h1
-          style={{
-            fontSize: '28px',
-            fontWeight: 800
-          }}
-        >
-          المقالات
-        </h1>
+          <p style={{ color: 'var(--color-text-secondary)' }}>
+            إدارة المقالات والمحتوى النصي في الموقع
+          </p>
+        </div>
 
         <button
           className="btn-saas btn-saas-primary"
           onClick={() => handleOpenModal()}
         >
-          <Plus size={18} />
-          مقال جديد
+          <Plus size={20} /> إضافة مقال
         </button>
 
       </div>
@@ -219,66 +165,151 @@ export default function AdminArticlesPage() {
       <div
         className="admin-card"
         style={{
-          padding: '20px',
-          marginBottom: '30px'
+          marginBottom: '32px',
+          padding: '16px'
         }}
       >
 
-        <Search size={18} />
+        <div style={{ position: 'relative' }}>
 
-        <input
-          className="input-saas"
-          placeholder="بحث"
-          value={searchTerm}
-          onChange={(e) =>
-            setSearchTerm(
-              e.target.value
-            )
-          }
-        />
+          <Search
+            size={18}
+            style={{
+              position: 'absolute',
+              right: '16px',
+              top: '50%',
+              transform: 'translateY(-50%)'
+            }}
+          />
+
+          <input
+            type="text"
+            placeholder="ابحث عن مقال"
+            className="input-saas"
+            style={{
+              width: '100%',
+              paddingRight: '48px'
+            }}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+        </div>
 
       </div>
 
 
       {loading ? (
 
-        <Loader2
-          className="animate-spin"
-        />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            padding: '100px'
+          }}
+        >
+          <Loader2
+            className="animate-spin"
+            size={40}
+          />
+        </div>
 
       ) : (
 
         <div
           style={{
             display: 'grid',
-            gap: '20px'
+            gridTemplateColumns:
+              'repeat(auto-fill,minmax(300px,1fr))',
+            gap: '24px'
           }}
         >
 
-          {filteredArticles.map(a => (
+          {filteredArticles.map(article => (
 
             <div
-              key={a.id}
+              key={article.id}
               className="admin-card"
+              style={{
+                padding: '24px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px'
+              }}
             >
 
-              <h3>{a.title}</h3>
+              {article.image && (
 
-              <button
-                onClick={() =>
-                  handleOpenModal(a)
-                }
-              >
-                تعديل
-              </button>
+                <div
+                  style={{
+                    width: '100%',
+                    height: '160px',
+                    borderRadius: '12px',
+                    overflow: 'hidden'
+                  }}
+                >
 
-              <button
-                onClick={() =>
-                  handleDelete(a.id)
-                }
+                  <img
+                    src={article.image}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+
+                </div>
+
+              )}
+
+
+              <h3
+                style={{
+                  fontSize: '18px',
+                  fontWeight: 800
+                }}
               >
-                حذف
-              </button>
+                {article.title}
+              </h3>
+
+
+              <p
+                style={{
+                  color: 'var(--color-text-secondary)',
+                  fontSize: '14px'
+                }}
+              >
+                {article.excerpt}
+              </p>
+
+
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '10px'
+                }}
+              >
+
+                <button
+                  className="btn-saas"
+                  onClick={() =>
+                    handleOpenModal(article)
+                  }
+                >
+                  تعديل
+                </button>
+
+
+                <button
+                  className="btn-saas"
+                  onClick={() =>
+                    handleDelete(article.id)
+                  }
+                >
+                  حذف
+                </button>
+
+              </div>
 
             </div>
 
@@ -289,18 +320,85 @@ export default function AdminArticlesPage() {
       )}
 
 
+
       <AnimatePresence>
 
         {isModalOpen && (
 
-          <div>
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 1000,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
 
-            <motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsModalOpen(false)}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background:
+                  'rgba(0,0,0,0.6)'
+              }}
+            />
+
+
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                scale: 0.9
+              }}
+
+              animate={{
+                opacity: 1,
+                scale: 1
+              }}
+
+              exit={{
+                opacity: 0,
+                scale: 0.9
+              }}
+
+              className="admin-card"
+
+              style={{
+                position: 'relative',
+                width: '100%',
+                maxWidth: '700px',
+                padding: '40px',
+                zIndex: 1001
+              }}
+            >
+
+              <h2
+                style={{
+                  fontSize: '22px',
+                  fontWeight: 900,
+                  marginBottom: '20px'
+                }}
+              >
+
+                {formData.id
+                  ? 'تعديل المقال'
+                  : 'مقال جديد'}
+
+              </h2>
+
+
 
               <input
+                className="input-saas"
                 placeholder="عنوان المقال"
                 value={formData.title}
-                onChange={(e) =>
+                onChange={e =>
                   handleTitleChange(
                     e.target.value
                   )
@@ -309,22 +407,10 @@ export default function AdminArticlesPage() {
 
 
               <textarea
-                placeholder="المحتوى"
-                value={formData.content}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    content:
-                      e.target.value
-                  })
-                }
-              />
-
-
-              <textarea
+                className="input-saas"
                 placeholder="وصف مختصر"
                 value={formData.excerpt}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({
                     ...formData,
                     excerpt:
@@ -334,10 +420,25 @@ export default function AdminArticlesPage() {
               />
 
 
+              <textarea
+                className="input-saas"
+                rows={6}
+                placeholder="المحتوى"
+                value={formData.content}
+                onChange={e =>
+                  setFormData({
+                    ...formData,
+                    content:
+                      e.target.value
+                  })
+                }
+              />
+
+
               <FileUploader
                 label="صورة المقال"
                 value={formData.image}
-                onChange={(url: string) =>
+                onChange={url =>
                   setFormData({
                     ...formData,
                     image: url
@@ -347,10 +448,17 @@ export default function AdminArticlesPage() {
 
 
               <button
+                className="btn-saas btn-saas-primary"
                 onClick={handleSave}
+                disabled={saving}
               >
-                حفظ
+
+                {saving
+                  ? 'جاري الحفظ'
+                  : 'حفظ'}
+
               </button>
+
 
             </motion.div>
 
@@ -360,8 +468,7 @@ export default function AdminArticlesPage() {
 
       </AnimatePresence>
 
+
     </div>
-
   );
-
 }
