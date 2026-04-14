@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Upload, X, Loader2, ImageIcon, Film } from 'lucide-react';
+import { Upload, X, Loader2, ImageIcon, Film, AlertCircle } from 'lucide-react';
+import { storage } from '@/lib/supabase/storage';
+import { isSupabaseConfigured } from '@/lib/supabase/client';
 import Image from 'next/image';
 
 export default function FileUploader({ 
@@ -24,6 +26,9 @@ export default function FileUploader({
   const isVideo = accept?.includes('video');
 
   const handleUpload = async (file: File) => {
+    // Vercel limit is 4.5MB, MongoDB document limit is 16MB (Base64 adds 33% overhead)
+    // If not using Supabase, we must stay under Vercel's limit
+    const VERCEL_LIMIT = 4 * 1024 * 1024; // 4MB safe limit
     const maxSizeBytes = isVideo ? 100 * 1024 * 1024 : 10 * 1024 * 1024;
     
     if (file.size > maxSizeBytes) {
@@ -31,26 +36,70 @@ export default function FileUploader({
       return;
     }
 
+    if (!isSupabaseConfigured && file.size > VERCEL_LIMIT) {
+      alert('نظراً لقيود الخادم، لا يمكن رفع ملفات أكبر من 4.5 ميجابايت بدون إعداد Supabase. يرجى إعداد Supabase للملفات الكبيرة أو تقليل حجم الملف.');
+      return;
+    }
+
     setIsUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
+      let url = '';
 
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('admin_token')}` },
-        body: formData
-      });
+      // 1. Try Supabase Storage if configured
+      if (isSupabaseConfigured) {
+        const bucket = isVideo ? 'videos' : 'website-images';
+        const uploadedUrl = await storage.uploadFile(file, bucket);
+        if (uploadedUrl) {
+          url = uploadedUrl;
+          
+          // Also register in local Media library
+          try {
+            await fetch('/api/upload', {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('admin_token')}` 
+              },
+              body: JSON.stringify({ url, name: file.name, skipSave: true })
+            });
+          } catch (e) {
+            console.error('Failed to register media in DB:', e);
+          }
+        }
+      } 
+      
+      // 2. Fallback to API upload (Base64)
+      if (!url) {
+        const formData = new FormData();
+        formData.append('file', file);
 
-      const data = await res.json();
-      if (res.ok && data.url) {
-        onChange(data.url);
-      } else {
-        alert(data.error || 'فشل في رفع الملف');
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('admin_token')}` },
+          body: formData
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || `Server responded with ${res.status}`);
+        }
+
+        const data = await res.json();
+        url = data.url;
       }
-    } catch (err) {
-      console.error(err);
-      alert('حدث خطأ أثناء الاتصال بالخادم');
+
+      if (url) {
+        onChange(url);
+      } else {
+        throw new Error('فشل في الحصول على رابط الملف');
+      }
+    } catch (err: any) {
+      console.error('Upload Error Details:', err);
+      if (err.message.includes('413') || err.message.toLowerCase().includes('large')) {
+        alert('حجم الملف كبير جداً بالنسبة للخادم. يرجى استخدام ملف أصغر (أقل من 4MB) أو تفعيل Supabase.');
+      } else {
+        alert(err.message || 'حدث خطأ أثناء الاتصال بالخادم. تأكد من حجم الملف والاتصال بالإنترنت.');
+      }
     } finally {
       setIsUploading(false);
     }
