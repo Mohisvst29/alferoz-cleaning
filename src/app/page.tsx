@@ -12,13 +12,12 @@ export default async function HomePage() {
   // Ensure database is seeded
   await seedDatabase();
 
-  const services = await db.services.getActive();
   const testimonials = await db.testimonials.getActive();
 
   return (
     <>
       <HeroSection />
-      <ServicesPreview services={services} />
+      <ServicesPreview />
       <WhyChooseUs />
       <TestimonialsSection testimonials={testimonials} />
       <CTASection />
