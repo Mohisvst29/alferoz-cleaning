@@ -6,8 +6,9 @@ import type { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const article = await db.articles.getBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const article = await db.articles.getBySlug(resolvedParams.slug);
   const seo = await db.seo.get();
 
   if (!article) return { title: 'مقال غير موجود' };
@@ -23,8 +24,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
-  const article = await db.articles.getBySlug(params.slug);
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params;
+  const article = await db.articles.getBySlug(resolvedParams.slug);
 
   if (!article || article.status !== 'published') {
     notFound();

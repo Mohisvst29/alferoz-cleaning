@@ -15,20 +15,11 @@ export async function POST(request: NextRequest) {
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-
-    // Create unique filename
-    const filename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
     
-    // Ensure directory exists
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
-    }
-
-    const path = join(uploadDir, filename);
-    await writeFile(path, buffer);
-
-    const url = `/uploads/${filename}`;
+    // Instead of saving to Vercel's read-only file system,
+    // convert it to a Base64 string so it can be saved in MongoDB
+    const mimeType = file.type || 'image/png';
+    const url = `data:${mimeType};base64,${buffer.toString('base64')}`;
 
     // Also save to Media collection for the Media Library
     await db.media.create({

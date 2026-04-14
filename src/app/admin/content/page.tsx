@@ -50,7 +50,8 @@ export default function AdminArticlesPage() {
   };
 
   const handleTitleChange = (val: string) => {
-    const slug = val.toLowerCase().replace(/[\s\W-]+/g, '-');
+    // Supports Arabic, English, Numbers and simple spaces -> dashes
+    const slug = val.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w\u0621-\u064A0-9-]/g, '');
 
     setFormData({
       ...formData,
@@ -377,7 +378,11 @@ export default function AdminArticlesPage() {
                 zIndex: 1001,
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '20px'
+                gap: '20px',
+                background: 'var(--color-bg)',
+                border: '1px solid var(--color-border)',
+                maxHeight: '90vh',
+                overflowY: 'auto'
               }}
             >
 
