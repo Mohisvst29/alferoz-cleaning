@@ -102,6 +102,11 @@ export const db = {
     async count(): Promise<number> {
       await dbConnect();
       return await Booking.countDocuments();
+    },
+    async delete(id: string): Promise<boolean> {
+      await dbConnect();
+      const result = await Booking.findByIdAndDelete(id);
+      return !!result;
     }
   },
 
@@ -272,6 +277,25 @@ export const db = {
 
   // ── Contacts ─────────────────────────────────
   contacts: {
+    async getAll(): Promise<any[]> {
+      await dbConnect();
+      const items = await Contact.find().sort({ created_at: -1 });
+      return items.map(toPlain);
+    },
+    async create(data: any): Promise<any> {
+      await dbConnect();
+      const newItem = await Contact.create(data);
+      return toPlain(newItem);
+    },
+    async delete(id: string): Promise<boolean> {
+      await dbConnect();
+      return !!(await Contact.findByIdAndDelete(id));
+    },
+    async update(id: string, data: any): Promise<any> {
+      await dbConnect();
+      const updated = await Contact.findByIdAndUpdate(id, data, { new: true });
+      return toPlain(updated);
+    },
     async count(): Promise<number> {
       await dbConnect();
       return await Contact.countDocuments();

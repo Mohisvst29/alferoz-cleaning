@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { db } from '@/lib/db';
-import { Sparkles, Calendar, ChevronLeft, ArrowRight } from 'lucide-react';
+import { Sparkles, Calendar, ChevronLeft, ArrowRight, FileText } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 

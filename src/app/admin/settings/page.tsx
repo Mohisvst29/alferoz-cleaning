@@ -220,14 +220,14 @@ export default function AdminSettingsPage() {
               <h3 style={{ fontSize: '18px', fontWeight: 800, marginBottom: '24px' }}>الهوية البصرية</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
                 <div>
-                  <FileUploader label="شعار الموقع (Logo)" value={settings?.logo} onChange={u => setSettings(prev => ({...prev, logo: u}))} aspectRatio="2/1" />
+                  <FileUploader label="شعار الموقع (Logo)" value={settings?.logo} onChange={u => setSettings((prev: any) => ({...prev, logo: u}))} aspectRatio="2/1" />
                   <div style={{ marginTop: '16px' }}>
                     <label className="admin-label">حجم الشعار: {settings?.logoSize || 120}px</label>
                     <input type="range" min="60" max="250" value={settings?.logoSize || 120} onChange={e => setSettings({...settings, logoSize: Number(e.target.value)})} style={{ width: '100%' }} />
                   </div>
                 </div>
                 <div>
-                  <FileUploader label="أيقونة المتصفح (Favicon)" value={settings?.favicon} onChange={u => setSettings(prev => ({...prev, favicon: u}))} />
+                  <FileUploader label="أيقونة المتصفح (Favicon)" value={settings?.favicon} onChange={u => setSettings((prev: any) => ({...prev, favicon: u}))} />
                 </div>
               </div>
             </div>
@@ -241,14 +241,14 @@ export default function AdminSettingsPage() {
                 <div><label className="admin-label">الوصف</label><textarea className="input-saas" rows={3} value={settings?.heroDescription || ''} onChange={e => setSettings({...settings, heroDescription: e.target.value})} /></div>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
-                  <FileUploader label="الصورة رقم 1" value={settings?.heroImage} onChange={u => setSettings(prev => ({...prev, heroImage: u}))} aspectRatio="16/9" />
-                  <FileUploader label="الصورة رقم 2" value={settings?.heroImage2} onChange={u => setSettings(prev => ({...prev, heroImage2: u}))} aspectRatio="16/9" />
-                  <FileUploader label="الصورة رقم 3" value={settings?.heroImage3} onChange={u => setSettings(prev => ({...prev, heroImage3: u}))} aspectRatio="16/9" />
+                  <FileUploader label="الصورة رقم 1" value={settings?.heroImage} onChange={u => setSettings((prev: any) => ({...prev, heroImage: u}))} aspectRatio="16/9" />
+                  <FileUploader label="الصورة رقم 2" value={settings?.heroImage2} onChange={u => setSettings((prev: any) => ({...prev, heroImage2: u}))} aspectRatio="16/9" />
+                  <FileUploader label="الصورة رقم 3" value={settings?.heroImage3} onChange={u => setSettings((prev: any) => ({...prev, heroImage3: u}))} aspectRatio="16/9" />
                 </div>
                 
                 <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '24px' }}>
                   <label className="admin-label">ملف الفيديو (اختياري)</label>
-                  <FileUploader label="فيديو الهيرو (MP4)" value={settings?.heroVideo} onChange={u => setSettings(prev => ({...prev, heroVideo: u}))} aspectRatio="16/9" accept="video/mp4" />
+                  <FileUploader label="فيديو الهيرو (MP4)" value={settings?.heroVideo} onChange={u => setSettings((prev: any) => ({...prev, heroVideo: u}))} aspectRatio="16/9" accept="video/mp4" />
                   <p style={{ fontSize: '12px', color: 'var(--color-text-muted)', marginTop: '8px' }}>ملاحظة: إذا تم رفع فيديو، سيتم عرضه كخلفية بدلاً من الصور المتحركة.</p>
                 </div>
               </div>
@@ -260,29 +260,29 @@ export default function AdminSettingsPage() {
               <div className="admin-card">
                 <h3 style={{ fontSize: '18px', fontWeight: 800, marginBottom: '8px' }}>صفحة من نحن</h3>
                 <p style={{ color: 'var(--color-text-muted)', fontSize: '13px', marginBottom: '24px' }}>الصورة الجانبية التي تظهر في صفحة «من نحن».</p>
-                <FileUploader label="صورة قسم من نحن" value={settings?.aboutImage} onChange={u => setSettings(prev => ({...prev, aboutImage: u}))} aspectRatio="4/3" />
+                <FileUploader label="صورة قسم من نحن" value={settings?.aboutImage} onChange={u => setSettings((prev: any) => ({...prev, aboutImage: u}))} aspectRatio="4/3" />
               </div>
 
               <div className="admin-card">
                 <h3 style={{ fontSize: '18px', fontWeight: 800, marginBottom: '8px' }}>صور الفريق (صفحة من نحن)</h3>
                 <p style={{ color: 'var(--color-text-muted)', fontSize: '13px', marginBottom: '24px' }}>الصور الثلاث التي تظهر في قسم فريقنا المحترف.</p>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px' }}>
-                  <FileUploader label="صورة الفريق 1" value={settings?.teamImage1} onChange={u => setSettings(prev => ({...prev, teamImage1: u}))} aspectRatio="1/1" />
-                  <FileUploader label="صورة الفريق 2" value={settings?.teamImage2} onChange={u => setSettings(prev => ({...prev, teamImage2: u}))} aspectRatio="1/1" />
-                  <FileUploader label="صورة الفريق 3" value={settings?.teamImage3} onChange={u => setSettings(prev => ({...prev, teamImage3: u}))} aspectRatio="1/1" />
+                  <FileUploader label="صورة الفريق 1" value={settings?.teamImage1} onChange={u => setSettings((prev: any) => ({...prev, teamImage1: u}))} aspectRatio="1/1" />
+                  <FileUploader label="صورة الفريق 2" value={settings?.teamImage2} onChange={u => setSettings((prev: any) => ({...prev, teamImage2: u}))} aspectRatio="1/1" />
+                  <FileUploader label="صورة الفريق 3" value={settings?.teamImage3} onChange={u => setSettings((prev: any) => ({...prev, teamImage3: u}))} aspectRatio="1/1" />
                 </div>
               </div>
 
               <div className="admin-card">
                 <h3 style={{ fontSize: '18px', fontWeight: 800, marginBottom: '8px' }}>قسم لماذا الفيروز؟</h3>
                 <p style={{ color: 'var(--color-text-muted)', fontSize: '13px', marginBottom: '24px' }}>الصورة الجانبية في قسم مميزاتنا بالصفحة الرئيسية.</p>
-                <FileUploader label="صورة قسم لماذا الفيروز" value={settings?.whyUsImage} onChange={u => setSettings(prev => ({...prev, whyUsImage: u}))} aspectRatio="4/3" />
+                <FileUploader label="صورة قسم لماذا الفيروز" value={settings?.whyUsImage} onChange={u => setSettings((prev: any) => ({...prev, whyUsImage: u}))} aspectRatio="4/3" />
               </div>
 
               <div className="admin-card">
                 <h3 style={{ fontSize: '18px', fontWeight: 800, marginBottom: '8px' }}>قسم الدعوة للحجز (CTA)</h3>
                 <p style={{ color: 'var(--color-text-muted)', fontSize: '13px', marginBottom: '24px' }}>صورة الخلفية في قسم «احجز الآن» في أسفل الصفحة الرئيسية.</p>
-                <FileUploader label="صورة خلفية CTA" value={settings?.ctaImage} onChange={u => setSettings(prev => ({...prev, ctaImage: u}))} aspectRatio="16/5" />
+                <FileUploader label="صورة خلفية CTA" value={settings?.ctaImage} onChange={u => setSettings((prev: any) => ({...prev, ctaImage: u}))} aspectRatio="16/5" />
               </div>
             </div>
           )}
