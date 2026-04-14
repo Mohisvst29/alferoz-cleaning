@@ -1,0 +1,74 @@
+[
+  {
+    "id": "e0720b0d-90b2-4d57-b196-a8ed1015d24f",
+    "title": "تنظيف منازل",
+    "description": "نعتني بأدق تفاصيل منزلك باستخدام أحدث المعدات والمواد الآمنة عالمياً.",
+    "image": "/images/home-cleaning.png",
+    "active": true,
+    "sort_order": 1,
+    "created_at": "2026-04-14T02:34:33.071Z"
+  },
+  {
+    "id": "8511fb44-0970-4fea-b1f9-4407a44ef06e",
+    "title": "تنظيف شركات",
+    "description": "بيئة عمل نظيفة ومحفزة للإنتاجية مع خدماتنا المتخصصة للقطاع التجاري.",
+    "image": "/images/office-cleaning.png",
+    "active": true,
+    "sort_order": 2,
+    "created_at": "2026-04-14T02:34:33.072Z"
+  },
+  {
+    "id": "ffa6ac91-7dbe-4baa-8e10-1ddb26bb25db",
+    "title": "تنظيف بعد التشطيب",
+    "description": "إزالة كاملة لآثار البناء والطلاء وتجهيز المنشأة للسكن الفوري.",
+    "image": "/images/transformation.png",
+    "active": true,
+    "sort_order": 3,
+    "created_at": "2026-04-14T02:34:33.072Z"
+  },
+  {
+    "id": "9e69b586-6d79-4437-a051-d0111217dc29",
+    "title": "تنظيف كنب",
+    "description": "تقنيات تنظيف بالبخار تزيل أصعب البقع وتحافظ على جودة الأقمشة.",
+    "image": "/images/equipment.png",
+    "active": true,
+    "sort_order": 4,
+    "created_at": "2026-04-14T02:34:33.072Z"
+  },
+  {
+    "id": "ff00bd99-5467-46ab-b763-30d74330d2c7",
+    "title": "تنظيف سجاد",
+    "description": "غسيل وتطهير عميق للسجاد والموكيت بأعلى معايير الجودة والتعقيم.",
+    "image": "/images/home-cleaning.png",
+    "active": true,
+    "sort_order": 5,
+    "created_at": "2026-04-14T02:34:33.072Z"
+  },
+  {
+    "id": "91808534-7aa3-4e60-8dab-ed60263b3f98",
+    "title": "تعقيم",
+    "description": "خدمات تعقيم متطورة تقضي على 99% من الفيروسات والبكتيريا لضمان سلامتكم.",
+    "image": "/images/equipment.png",
+    "active": true,
+    "sort_order": 6,
+    "created_at": "2026-04-14T02:34:33.072Z"
+  },
+  {
+    "id": "f7350c19-8cd8-4fae-a1a4-b006fc2400a8",
+    "title": "تنظيف فلل",
+    "description": "باقات تنظيف شاملة للفلل والقصور بفرق عمل متخصصة وأدوات احترافية.",
+    "image": "/images/luxury-house-cleaning.png",
+    "active": true,
+    "sort_order": 7,
+    "created_at": "2026-04-14T02:34:33.072Z"
+  },
+  {
+    "id": "31436bc9-d323-4f98-a23c-9e1a2abebb0c",
+    "title": "مكافحة الحشرات",
+    "description": "خدمة مكافحة الحشرات باستخدام مواد آمنة وفعالة للقضاء على النمل والصراصير والبق والبعوض وجميع أنواع الحشرات مع ضمان بيئة صحية وآمنة.",
+    "image": "/images/equipment.png",
+    "active": true,
+    "sort_order": 8,
+    "created_at": "2026-04-14T02:34:33.072Z"
+  }
+]
