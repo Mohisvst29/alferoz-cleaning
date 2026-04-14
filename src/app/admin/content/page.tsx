@@ -49,7 +49,7 @@ export default function AdminArticlesPage() {
   const handleSave = async () => {
     setSaving(true);
     const method = formData.id ? 'PUT' : 'POST';
-    const payload = { ...formData };
+    const payload = { ...formData } as any;
     if (!payload.id) delete payload.id;
 
     await fetch('/api/articles', {
