@@ -131,29 +131,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </main>
 
-      <style jsx global>{`
-        @media (max-width: 1024px) {
-          .admin-sidebar {
-            left: -280px;
-            width: 280px !important;
-            transition: 0.3s ease-in-out;
-            background: #0f172a !important;
-          }
-          .admin-sidebar.mobile-open {
-            left: 0;
-          }
-          .admin-main {
-            margin-left: 0 !important;
-            padding-top: 100px !important;
-          }
-          .mobile-admin-header {
-            display: flex !important;
-          }
-          .desktop-only {
-            display: none !important;
-          }
-        }
-      `}</style>
+
     </div>
   );
 }

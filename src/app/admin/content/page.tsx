@@ -435,16 +435,7 @@ export default function AdminArticlesPage() {
               />
 
 
-              <FileUploader
-                label="صورة المقال"
-                value={formData.image}
-                onChange={url =>
-                  setFormData({
-                    ...formData,
-                    image: url
-                  })
-                }
-              />
+              <FileUploader label="صورة المقال" value={formData.image} onChange={url => setFormData({...formData, image: url})} />
 
 
               <button

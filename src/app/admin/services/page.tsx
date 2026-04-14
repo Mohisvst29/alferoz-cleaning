@@ -46,8 +46,14 @@ export default function AdminServicesPage() {
     const method = formData.id ? 'PUT' : 'POST';
     const url = '/api/services';
     
-    const payload = { ...formData };
-    if (!payload.id) delete payload.id;
+    const payload = formData.id
+      ? formData
+      : {
+          title: formData.title,
+          description: formData.description,
+          image: formData.image,
+          active: formData.active
+        };
 
     await fetch(url, {
       method,

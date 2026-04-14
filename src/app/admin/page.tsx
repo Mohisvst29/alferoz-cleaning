@@ -146,16 +146,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <style jsx>{`
-        @media (max-width: 1200px) {
-          .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-          .charts-grid { grid-template-columns: 1fr !important; }
-        }
-        @media (max-width: 600px) {
-          .stats-grid { grid-template-columns: 1fr !important; }
-          .admin-container { padding: 0 !important; }
-        }
-      `}</style>
+
     </div>
   );
 }

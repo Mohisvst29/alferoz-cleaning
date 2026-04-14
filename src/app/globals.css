@@ -309,3 +309,35 @@ body {
 @media (max-width: 768px) {
   .team-grid { grid-template-columns: 1fr !important; }
 }
+
+/* ─── Admin Dashboard ──────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .charts-grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    left: -280px;
+    width: 280px !important;
+    transition: 0.3s ease-in-out;
+    background: #0f172a !important;
+  }
+  .admin-sidebar.mobile-open {
+    left: 0;
+  }
+  .admin-main {
+    margin-left: 0 !important;
+    padding-top: 100px !important;
+    padding: 20px !important;
+  }
+  .mobile-admin-header {
+    display: flex !important;
+  }
+  .desktop-only {
+    display: none !important;
+  }
+}
+@media (max-width: 600px) {
+  .stats-grid { grid-template-columns: 1fr !important; }
+  .admin-container { padding: 0 !important; }
+}
