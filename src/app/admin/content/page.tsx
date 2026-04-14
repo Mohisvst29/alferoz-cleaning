@@ -50,7 +50,6 @@ export default function AdminArticlesPage() {
     } else {
 
       setFormData({
-
         id: '',
         title: '',
         slug: '',
@@ -58,7 +57,6 @@ export default function AdminArticlesPage() {
         excerpt: '',
         image: '',
         status: 'published'
-
       });
 
     }
@@ -75,16 +73,12 @@ export default function AdminArticlesPage() {
         .replace(/[\s\W-]+/g, '-');
 
     setFormData({
-
       ...formData,
-
       title: val,
-
       slug:
         formData.id
           ? formData.slug
           : slug
-
     });
 
   };
@@ -98,42 +92,31 @@ export default function AdminArticlesPage() {
         ? 'PUT'
         : 'POST';
 
-    const payload = formData.id
-
-      ? formData
-
-      : {
-
-          title: formData.title,
-
-          slug: formData.slug,
-
-          content: formData.content,
-
-          excerpt: formData.excerpt,
-
-          image: formData.image,
-
-          status: formData.status
-
-        };
+    const payload: any =
+      formData.id
+        ? formData
+        : {
+            title: formData.title,
+            slug: formData.slug,
+            content: formData.content,
+            excerpt: formData.excerpt,
+            image: formData.image,
+            status: formData.status
+          };
 
     await fetch('/api/articles', {
 
       method,
 
       headers: {
-
         'Content-Type': 'application/json',
-
         Authorization:
           `Bearer ${
             localStorage.getItem('admin_token')
           }`
-
       },
 
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
 
     });
 
@@ -174,7 +157,9 @@ export default function AdminArticlesPage() {
     articles.filter(a =>
       a?.title
         ?.toLowerCase()
-        .includes(searchTerm.toLowerCase())
+        .includes(
+          searchTerm.toLowerCase()
+        )
     );
 
   return (
@@ -184,7 +169,8 @@ export default function AdminArticlesPage() {
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent:
+            'space-between',
           alignItems: 'center',
           marginBottom: '40px'
         }}
@@ -196,22 +182,21 @@ export default function AdminArticlesPage() {
             fontWeight: 800
           }}
         >
-
           المقالات
-
         </h1>
 
         <button
           className="btn-saas btn-saas-primary"
-          onClick={() => handleOpenModal()}
+          onClick={() =>
+            handleOpenModal()
+          }
         >
-
           <Plus size={18} />
           مقال جديد
-
         </button>
 
       </div>
+
 
       <div
         className="admin-card"
@@ -228,15 +213,20 @@ export default function AdminArticlesPage() {
           placeholder="بحث"
           value={searchTerm}
           onChange={(e) =>
-            setSearchTerm(e.target.value)
+            setSearchTerm(
+              e.target.value
+            )
           }
         />
 
       </div>
 
+
       {loading ? (
 
-        <Loader2 className="animate-spin" />
+        <Loader2
+          className="animate-spin"
+        />
 
       ) : (
 
@@ -261,9 +251,7 @@ export default function AdminArticlesPage() {
                   handleOpenModal(a)
                 }
               >
-
                 تعديل
-
               </button>
 
               <button
@@ -271,9 +259,7 @@ export default function AdminArticlesPage() {
                   handleDelete(a.id)
                 }
               >
-
                 حذف
-
               </button>
 
             </div>
@@ -283,6 +269,7 @@ export default function AdminArticlesPage() {
         </div>
 
       )}
+
 
       <AnimatePresence>
 
@@ -302,6 +289,7 @@ export default function AdminArticlesPage() {
                 }
               />
 
+
               <textarea
                 placeholder="المحتوى"
                 value={formData.content}
@@ -314,6 +302,7 @@ export default function AdminArticlesPage() {
                 }
               />
 
+
               <FileUploader
                 label="صورة المقال"
                 value={formData.image}
@@ -325,12 +314,11 @@ export default function AdminArticlesPage() {
                 }
               />
 
+
               <button
                 onClick={handleSave}
               >
-
                 حفظ
-
               </button>
 
             </motion.div>
