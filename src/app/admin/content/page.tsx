@@ -28,11 +28,17 @@ export default function AdminArticlesPage() {
   }, []);
 
   const fetchArticles = async () => {
+
     setLoading(true);
+
     const res = await fetch('/api/articles');
+
     const data = await res.json();
+
     setArticles(Array.isArray(data) ? data : []);
+
     setLoading(false);
+
   };
 
   const handleOpenModal = (article: any = null) => {
@@ -44,6 +50,7 @@ export default function AdminArticlesPage() {
     } else {
 
       setFormData({
+
         id: '',
         title: '',
         slug: '',
@@ -51,6 +58,7 @@ export default function AdminArticlesPage() {
         excerpt: '',
         image: '',
         status: 'published'
+
       });
 
     }
@@ -58,7 +66,6 @@ export default function AdminArticlesPage() {
     setIsModalOpen(true);
 
   };
-
 
   const handleTitleChange = (val: string) => {
 
@@ -82,7 +89,6 @@ export default function AdminArticlesPage() {
 
   };
 
-
   const handleSave = async () => {
 
     setSaving(true);
@@ -92,8 +98,6 @@ export default function AdminArticlesPage() {
         ? 'PUT'
         : 'POST';
 
-
-    // لا نستخدم delete نهائياً
     const payload = formData.id
 
       ? formData
@@ -114,7 +118,6 @@ export default function AdminArticlesPage() {
 
         };
 
-
     await fetch('/api/articles', {
 
       method,
@@ -123,7 +126,7 @@ export default function AdminArticlesPage() {
 
         'Content-Type': 'application/json',
 
-        'Authorization':
+        Authorization:
           `Bearer ${
             localStorage.getItem('admin_token')
           }`
@@ -134,7 +137,6 @@ export default function AdminArticlesPage() {
 
     });
 
-
     setSaving(false);
 
     setIsModalOpen(false);
@@ -142,7 +144,6 @@ export default function AdminArticlesPage() {
     fetchArticles();
 
   };
-
 
   const handleDelete = async (id: string) => {
 
@@ -154,7 +155,7 @@ export default function AdminArticlesPage() {
 
         headers: {
 
-          'Authorization':
+          Authorization:
             `Bearer ${
               localStorage.getItem('admin_token')
             }`
@@ -169,129 +170,81 @@ export default function AdminArticlesPage() {
 
   };
 
-
   const filteredArticles =
     articles.filter(a =>
       a?.title
         ?.toLowerCase()
-        .includes(
-          searchTerm.toLowerCase()
-        )
+        .includes(searchTerm.toLowerCase())
     );
-
 
   return (
 
     <div>
 
       <div
-
         style={{
-
           display: 'flex',
-
-          justifyContent:
-            'space-between',
-
+          justifyContent: 'space-between',
           alignItems: 'center',
-
           marginBottom: '40px'
-
         }}
-
       >
 
         <h1
-
           style={{
-
             fontSize: '28px',
-
             fontWeight: 800
-
           }}
-
         >
 
           المقالات
 
         </h1>
 
-
         <button
-
           className="btn-saas btn-saas-primary"
-
-          onClick={() =>
-            handleOpenModal()
-          }
-
+          onClick={() => handleOpenModal()}
         >
 
           <Plus size={18} />
-
           مقال جديد
 
         </button>
 
       </div>
 
-
-
       <div
-
         className="admin-card"
-
         style={{
-
           padding: '20px',
-
           marginBottom: '30px'
-
         }}
-
       >
 
         <Search size={18} />
 
         <input
-
           className="input-saas"
-
           placeholder="بحث"
-
           value={searchTerm}
-
-          onChange={e =>
-            setSearchTerm(
-              e.target.value
-            )
+          onChange={(e) =>
+            setSearchTerm(e.target.value)
           }
-
         />
 
       </div>
 
-
-
       {loading ? (
 
-        <Loader2
-          className="animate-spin"
-        />
+        <Loader2 className="animate-spin" />
 
       ) : (
 
         <div
-
           style={{
-
             display: 'grid',
-
             gap: '20px'
-
           }}
-
         >
 
           {filteredArticles.map(a => (
@@ -313,7 +266,6 @@ export default function AdminArticlesPage() {
 
               </button>
 
-
               <button
                 onClick={() =>
                   handleDelete(a.id)
@@ -332,8 +284,6 @@ export default function AdminArticlesPage() {
 
       )}
 
-
-
       <AnimatePresence>
 
         {isModalOpen && (
@@ -343,52 +293,37 @@ export default function AdminArticlesPage() {
             <motion.div>
 
               <input
-
+                placeholder="عنوان المقال"
                 value={formData.title}
-
-                onChange={e =>
+                onChange={(e) =>
                   handleTitleChange(
                     e.target.value
                   )
                 }
-
               />
-
 
               <textarea
-
+                placeholder="المحتوى"
                 value={formData.content}
-
-                onChange={e =>
+                onChange={(e) =>
                   setFormData({
-
                     ...formData,
-
                     content:
                       e.target.value
-
                   })
                 }
-
               />
-
 
               <FileUploader
-
+                label="صورة المقال"
                 value={formData.image}
-
-                onChange={url =>
+                onChange={(url: string) =>
                   setFormData({
-
                     ...formData,
-
                     image: url
-
                   })
                 }
-
               />
-
 
               <button
                 onClick={handleSave}
