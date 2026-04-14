@@ -139,31 +139,16 @@ export default function FileUploader({
         onDrop={onDrop}
 
         style={{
-
+          position: 'relative',
           width: '100%',
-
           aspectRatio,
-
-          border:
-
-            '2px dashed #ccc',
-
-          borderRadius:
-            '12px',
-
+          border: '2px dashed #ccc',
+          borderRadius: '12px',
           display: 'flex',
-
-          alignItems:
-            'center',
-
-          justifyContent:
-            'center',
-
+          alignItems: 'center',
+          justifyContent: 'center',
           cursor: 'pointer',
-
-          overflow:
-            'hidden'
-
+          overflow: 'hidden'
         }}
 
         onClick={() =>
