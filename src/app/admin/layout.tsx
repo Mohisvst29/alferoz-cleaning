@@ -77,7 +77,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         animate={{ width: collapsed ? 80 : 280 }}
         className={`admin-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}
         style={{ 
-          position: 'fixed', top: 0, bottom: 0, right: 0, zIndex: 50,
+          position: 'fixed', top: 0, bottom: 0, zIndex: 50,
           display: 'flex', flexDirection: 'column', padding: '24px 16px'
         }}
       >
