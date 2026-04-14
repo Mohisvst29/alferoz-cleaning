@@ -374,7 +374,10 @@ export default function AdminArticlesPage() {
                 width: '100%',
                 maxWidth: '700px',
                 padding: '40px',
-                zIndex: 1001
+                zIndex: 1001,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '20px'
               }}
             >
 
