@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { Sparkles, Lock, User, LogIn, Loader2, AlertCircle } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const [username, setUsername] = useState('');
@@ -43,89 +45,133 @@ export default function AdminLoginPage() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '24px',
+      position: 'relative',
+      padding: '20px',
+      background: 'var(--color-bg)',
+      overflow: 'hidden'
     }}>
-      <div className="glass-section" style={{
-        padding: '48px',
-        width: '100%',
-        maxWidth: '420px',
-      }}>
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+      {/* Dynamic Background */}
+      <div className="bg-mesh" style={{ opacity: 0.6 }} />
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="admin-card" 
+        style={{
+          width: '100%',
+          maxWidth: '440px',
+          padding: '40px 32px',
+          background: 'rgba(15, 23, 42, 0.8)',
+          backdropFilter: 'blur(30px)',
+          border: '1px solid var(--color-border)',
+          borderRadius: '24px',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+          zIndex: 10
+        }}
+      >
+        {/* Logo Section */}
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <div style={{
-            width: '64px',
-            height: '64px',
-            borderRadius: '16px',
+            width: '64px', height: '64px', borderRadius: '18px',
             background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '32px',
-            margin: '0 auto 16px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: 'white', margin: '0 auto 20px',
+            boxShadow: '0 8px 24px var(--color-primary-glow)'
           }}>
-            ✨
+            <Sparkles size={32} />
           </div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '8px' }}>لوحة التحكم</h1>
-          <p style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>الفيروز لخدمات النظافة</p>
+          <h1 style={{ fontSize: '24px', fontWeight: 900, marginBottom: '8px', color: 'white' }}>لوحة التحكم</h1>
+          <p style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>الفيروز لخدمات النظافة العامة</p>
         </div>
 
         {error && (
-          <div style={{
-            padding: '12px 16px',
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
-            borderRadius: 'var(--radius-md)',
-            color: 'var(--color-error)',
-            fontSize: '14px',
-            fontWeight: 600,
-            textAlign: 'center',
-            marginBottom: '20px',
-          }}>
-            {error}
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            style={{
+              padding: '12px 16px',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              borderRadius: '12px',
+              color: '#ef4444',
+              fontSize: '13px',
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              marginBottom: '24px',
+            }}
+          >
+            <AlertCircle size={18} /> {error}
+          </motion.div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div>
-            <label className="form-label" htmlFor="admin-username">اسم المستخدم</label>
-            <input
-              id="admin-username"
-              type="text"
-              required
-              className="form-input"
-              placeholder="admin"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-            />
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <div style={{ position: 'relative' }}>
+            <label className="admin-label" style={{ marginBottom: '8px', display: 'block' }}>اسم المستخدم</label>
+            <div style={{ position: 'relative' }}>
+               <User size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', zIndex: 1 }} />
+               <input
+                 type="text"
+                 required
+                 className="input-saas"
+                 style={{ paddingRight: '44px' }}
+                 placeholder="admin"
+                 value={username}
+                 onChange={e => setUsername(e.target.value)}
+               />
+            </div>
           </div>
 
-          <div>
-            <label className="form-label" htmlFor="admin-password">كلمة المرور</label>
-            <input
-              id="admin-password"
-              type="password"
-              required
-              className="form-input"
-              placeholder="••••••••"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-            />
+          <div style={{ position: 'relative' }}>
+            <label className="admin-label" style={{ marginBottom: '8px', display: 'block' }}>كلمة المرور</label>
+            <div style={{ position: 'relative' }}>
+               <Lock size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)', zIndex: 1 }} />
+               <input
+                 type="password"
+                 required
+                 className="input-saas"
+                 style={{ paddingRight: '44px' }}
+                 placeholder="••••••••"
+                 value={password}
+                 onChange={e => setPassword(e.target.value)}
+               />
+            </div>
           </div>
 
           <button
             type="submit"
-            className="btn-primary"
+            className="btn-saas btn-saas-primary"
             disabled={loading}
-            style={{ width: '100%', fontSize: '16px', padding: '14px', opacity: loading ? 0.7 : 1 }}
+            style={{ 
+              width: '100%', 
+              fontSize: '16px', 
+              padding: '14px',
+              height: '56px',
+              marginTop: '8px'
+            }}
           >
+            {loading ? <Loader2 className="animate-spin" size={20} /> : <LogIn size={20} />}
             <span>{loading ? 'جاري الدخول...' : 'تسجيل الدخول'}</span>
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: '24px', fontSize: '12px', color: 'var(--color-text-muted)' }}>
-          بيانات الدخول الافتراضية: admin / admin123
-        </p>
-      </div>
+        <div style={{ 
+          marginTop: '32px', 
+          padding: '12px', 
+          borderRadius: '12px', 
+          background: 'rgba(255,255,255,0.03)', 
+          textAlign: 'center' 
+        }}>
+           <p style={{ fontSize: '11px', color: 'var(--color-text-muted)', fontWeight: 600 }}>
+             🔒 نظام إدارة الفيروز الآمن
+           </p>
+        </div>
+      </motion.div>
+
+      {/* Decorative Circles */}
+      <div style={{ position: 'absolute', top: '10%', left: '10%', width: '300px', height: '300px', background: 'var(--color-primary)', filter: 'blur(150px)', opacity: 0.15, zIndex: 1 }} />
+      <div style={{ position: 'absolute', bottom: '10%', right: '10%', width: '300px', height: '300px', background: 'var(--color-accent)', filter: 'blur(150px)', opacity: 0.15, zIndex: 1 }} />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Edit, Trash2, Upload, CheckCircle, XCircle, ImageIcon } from 'lucide-react';
+import { Edit, Trash2, Upload, CheckCircle, XCircle, ImageIcon, Loader2 } from 'lucide-react';
 
 interface Service {
   id: string;
@@ -39,83 +39,52 @@ export default function AdminServiceCard({
   return (
     <div className="admin-card" style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       {/* Image Preview */}
-      <div style={{ position: 'relative', height: '180px', width: '100%', background: '#1e293b' }}>
+      <div style={{ position: 'relative', height: '160px', width: '100%', background: '#1e293b' }}>
         {service.image ? (
           <Image src={service.image} alt={service.title} fill style={{ objectFit: 'cover' }} />
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--color-text-muted)' }}>
-            <ImageIcon size={48} />
-            <span style={{ fontSize: '12px', marginTop: '8px' }}>لا توجد صورة</span>
+            <ImageIcon size={40} />
+            <span style={{ fontSize: '11px', marginTop: '6px' }}>بدون صورة</span>
           </div>
         )}
         
         {/* Status Badge */}
         <div style={{ 
-          position: 'absolute', top: '12px', right: '12px', 
-          padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700,
-          background: service.active ? 'rgba(16, 185, 129, 0.9)' : 'rgba(239, 68, 68, 0.9)',
+          position: 'absolute', top: '10px', right: '10px', 
+          padding: '4px 8px', borderRadius: '6px', fontSize: '10px', fontWeight: 800,
+          background: service.active ? 'rgba(34, 197, 94, 0.9)' : 'rgba(239, 68, 68, 0.9)',
+          backdropFilter: 'blur(4px)',
           color: 'white', display: 'flex', alignItems: 'center', gap: '4px'
         }}>
-          {service.active ? <CheckCircle size={12} /> : <XCircle size={12} />}
-          {service.active ? 'نشط' : 'غير نشط'}
+          {service.active ? <CheckCircle size={10} /> : <XCircle size={10} />}
+          {service.active ? 'نشط' : 'معطل'}
         </div>
       </div>
 
-      <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <h3 style={{ fontSize: '16px', fontWeight: 800, marginBottom: '8px', color: 'white' }}>{service.title}</h3>
-        <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: 1.5, marginBottom: '20px', flex: 1 }}>
-          {service.description.substring(0, 80)}...
+      <div style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <h3 style={{ fontSize: '15px', fontWeight: 900, marginBottom: '6px', color: 'white' }}>{service.title}</h3>
+        <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', lineHeight: 1.6, marginBottom: '16px', flex: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          {service.description}
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
-          <button onClick={onEdit} className="admin-btn-secondary">
+          <button onClick={onEdit} className="btn-secondary btn-sm" style={{ width: '100%' }}>
             <Edit size={14} /> تعديل
           </button>
-          <button onClick={onToggleStatus} className="admin-btn-secondary">
-            {service.active ? 'إيقاف' : 'تنشيط'}
+          <button onClick={onToggleStatus} className="btn-secondary btn-sm" style={{ width: '100%' }}>
+            {service.active ? 'إيقاف' : 'تبديل'}
           </button>
         </div>
 
-        <label style={{ 
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-          padding: '10px', borderRadius: '8px', background: 'var(--color-primary)', color: 'white',
-          fontSize: '13px', fontWeight: 700, cursor: 'pointer', transition: '0.3s'
-        }} className="hover-opacity">
-          <Upload size={14} /> {uploading ? 'جاري الرفع...' : 'رفع صورة'}
-          <input type="file" hidden accept="image/*" onChange={handleFileChange} disabled={uploading} />
-        </label>
-
-        <button onClick={onDelete} style={{ 
-          marginTop: '8px', background: 'transparent', border: 'none', color: '#ef4444', 
-          fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px'
-        }}>
-          <Trash2 size={12} /> حذف الخدمة
+        <button 
+          onClick={onDelete} 
+          className="btn-danger btn-sm" 
+          style={{ width: '100%', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.1)' }}
+        >
+          <Trash2 size={13} /> حذف الخدمة
         </button>
       </div>
-
-      <style jsx>{`
-        .admin-btn-secondary {
-          background: rgba(255,255,255,0.05);
-          border: 1px solid var(--color-border);
-          border-radius: 8px;
-          padding: 8px;
-          color: white;
-          font-size: 13px;
-          font-weight: 600;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          transition: 0.3s;
-        }
-        .admin-btn-secondary:hover {
-          background: rgba(255,255,255,0.1);
-        }
-        .hover-opacity:hover {
-          opacity: 0.9;
-        }
-      `}</style>
     </div>
   );
 }

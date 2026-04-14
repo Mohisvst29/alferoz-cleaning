@@ -129,17 +129,17 @@ export default function ContentAdmin() {
 
   return (
     <div className="admin-container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <h1 style={{ fontSize: '32px', fontWeight: 900, marginBottom: '8px' }}>المدونة والمقالات</h1>
-          <p style={{ color: 'var(--color-text-secondary)' }}>إدارة المقالات والمحتوى النصي في الموقع</p>
+          <h1 style={{ fontWeight: 900, marginBottom: '6px' }}>المدونة والمقالات</h1>
+          <p style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>إدارة المقالات والمحتوى النصي في الموقع</p>
         </div>
         <button 
           onClick={() => handleOpenModal()}
           className="btn-saas btn-saas-primary"
-          style={{ gap: '8px' }}
+          style={{ flexShrink: 0 }}
         >
-          <Plus size={20} /> إضافة مقال
+          <Plus size={18} /> إضافة مقال
         </button>
       </div>
 
@@ -234,18 +234,32 @@ export default function ContentAdmin() {
             />
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
               className="admin-modal-content"
-              style={{ padding: '40px', zIndex: 1001, display: 'flex', flexDirection: 'column', gap: '24px' }}
+              style={{ zIndex: 1001 }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2 style={{ fontSize: '24px', fontWeight: 900 }}>{formData.id ? 'تعديل المقال' : 'مقال جديد'}</h2>
-                <button onClick={() => setIsModalOpen(false)} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}><X size={24} /></button>
+              {/* Modal Header */}
+              <div style={{ 
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '20px 24px', borderBottom: '1px solid var(--color-border)'
+              }}>
+                <h2 style={{ fontSize: '20px', fontWeight: 900 }}>{formData.id ? 'تعديل المقال' : 'مقال جديد'}</h2>
+                <button 
+                  onClick={() => setIsModalOpen(false)} 
+                  style={{ 
+                    background: 'rgba(255,255,255,0.06)', border: '1px solid var(--color-border)', 
+                    color: 'white', cursor: 'pointer', width: '36px', height: '36px',
+                    borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  }}
+                >
+                  <X size={18} />
+                </button>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {/* Modal Body */}
+              <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div>
                   <label className="admin-label">عنوان المقال</label>
                   <input className="input-saas" placeholder="عنوان المقال" value={formData.title} onChange={e => handleTitleChange(e.target.value)} />
@@ -253,17 +267,17 @@ export default function ContentAdmin() {
 
                 <div>
                   <label className="admin-label">وصف مختصر</label>
-                  <textarea className="input-saas" placeholder="وصف مختصر يظهر في قائمة المقالات" value={formData.excerpt} onChange={e => setFormData({ ...formData, excerpt: e.target.value })} />
+                  <textarea className="input-saas" rows={3} placeholder="وصف مختصر يظهر في قائمة المقالات" value={formData.excerpt} onChange={e => setFormData({ ...formData, excerpt: e.target.value })} />
                 </div>
 
                 <div>
                   <label className="admin-label">المحتوى</label>
-                  <textarea className="input-saas" rows={10} placeholder="اكتب محتوى المقال هنا..." value={formData.content} onChange={e => setFormData({ ...formData, content: e.target.value })} />
+                  <textarea className="input-saas" rows={8} placeholder="اكتب محتوى المقال هنا..." value={formData.content} onChange={e => setFormData({ ...formData, content: e.target.value })} />
                 </div>
 
                 <FileUploader label="صورة المقال" value={formData.image} onChange={url => setFormData({ ...formData, image: url })} />
 
-                <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+                <div style={{ display: 'flex', gap: '12px', paddingTop: '8px' }}>
                   <button className="btn-saas btn-saas-primary" style={{ flex: 1 }} onClick={handleSave} disabled={saving}>
                     {saving ? 'جاري الحفظ...' : 'حفظ المقال'}
                   </button>

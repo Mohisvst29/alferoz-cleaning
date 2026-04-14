@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { Download, Search, Trash2, Calendar as CalendarIcon, Filter, MoreVertical, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Booking {
   id: string;
@@ -25,6 +27,7 @@ export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : '';
 
@@ -74,106 +77,131 @@ export default function AdminBookingsPage() {
     link.click();
   };
 
-  const filtered = filter === 'all' ? bookings : bookings.filter(b => b.status === filter);
+  const filtered = bookings.filter(b => {
+    const matchesFilter = filter === 'all' || b.status === filter;
+    const matchesSearch = b.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          b.phone.includes(searchTerm) ||
+                          b.city.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '4px' }}>إدارة الحجوزات</h1>
-          <p style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>{bookings.length} حجز</p>
+          <h1 style={{ fontWeight: 900, marginBottom: '6px' }}>إدارة الحجوزات</h1>
+          <p style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>لديك {bookings.length} حجوزات إجمالية</p>
         </div>
-        <button onClick={exportBookings} className="btn-secondary btn-sm">تصدير CSV 📥</button>
+        <button onClick={exportBookings} className="btn-secondary" style={{ gap: '8px' }}>
+          <Download size={18} /> تصدير CSV
+        </button>
       </div>
 
-      {/* Filters */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', flexWrap: 'wrap' }}>
-        {[
-          { key: 'all', label: 'الكل' },
-          { key: 'pending', label: 'معلق' },
-          { key: 'confirmed', label: 'مؤكد' },
-          { key: 'completed', label: 'مكتمل' },
-          { key: 'cancelled', label: 'ملغي' },
-        ].map(f => (
-          <button
-            key={f.key}
-            onClick={() => setFilter(f.key)}
-            style={{
-              padding: '8px 16px',
-              borderRadius: 'var(--radius-full)',
-              border: '1px solid',
-              borderColor: filter === f.key ? 'var(--color-accent)' : 'var(--color-border)',
-              background: filter === f.key ? 'rgba(6, 182, 212, 0.1)' : 'transparent',
-              color: filter === f.key ? 'var(--color-accent)' : 'var(--color-text-secondary)',
-              cursor: 'pointer',
-              fontFamily: 'var(--font-family)',
-              fontSize: '13px',
-              fontWeight: 600,
-            }}
-          >
-            {f.label}
-          </button>
-        ))}
+      {/* Controllers */}
+      <div className="admin-card" style={{ marginBottom: '24px', padding: '16px' }}>
+        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <div style={{ position: 'relative', flex: 1, minWidth: '240px' }}>
+            <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />
+            <input 
+              type="text" 
+              placeholder="ابحث بالاسم أو الجوال..." 
+              className="input-saas" 
+              style={{ paddingRight: '44px' }}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }} className="no-scrollbar">
+            {[
+              { key: 'all', label: 'الكل' },
+              { key: 'pending', label: 'معلق' },
+              { key: 'confirmed', label: 'مؤكد' },
+              { key: 'completed', label: 'مكتمل' },
+              { key: 'cancelled', label: 'ملغي' },
+            ].map(f => (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                className={`btn-sm ${filter === f.key ? 'btn-saas-primary' : 'btn-secondary'}`}
+                style={{ borderRadius: '20px', padding: '6px 16px' }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '48px' }}><div className="spinner" /></div>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '100px' }}>
+          <Loader2 className="animate-spin" size={40} color="var(--color-primary)" />
+        </div>
       ) : filtered.length === 0 ? (
-        <div className="glass-section" style={{ padding: '48px', textAlign: 'center' }}>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '16px' }}>لا توجد حجوزات</p>
+        <div className="admin-card" style={{ textAlign: 'center', padding: '60px 20px' }}>
+          <CalendarIcon size={48} style={{ color: 'var(--color-text-muted)', marginBottom: '16px', opacity: 0.5 }} />
+          <h3 style={{ color: 'var(--color-text-secondary)' }}>لا توجد حجوزات تطابق ذوقك</h3>
         </div>
       ) : (
-        <div className="glass-section" style={{ overflow: 'auto' }}>
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>الاسم</th>
-                <th>الجوال</th>
-                <th>المدينة</th>
-                <th>الخدمة</th>
-                <th>التاريخ</th>
-                <th>الحالة</th>
-                <th>إجراءات</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(booking => (
-                <tr key={booking.id}>
-                  <td style={{ fontWeight: 600, color: 'var(--color-text)' }}>{booking.name}</td>
-                  <td style={{ direction: 'ltr' }}>{booking.phone}</td>
-                  <td>{booking.city}</td>
-                  <td>{booking.service_type}</td>
-                  <td style={{ direction: 'ltr' }}>{booking.booking_date}</td>
-                  <td>
-                    <select
-                      value={booking.status}
-                      onChange={e => updateStatus(booking.id, e.target.value)}
-                      style={{
-                        padding: '4px 8px',
-                        borderRadius: 'var(--radius-sm)',
-                        border: '1px solid var(--color-border)',
-                        background: 'var(--color-bg-card)',
-                        color: 'var(--color-text)',
-                        fontSize: '13px',
-                        fontFamily: 'var(--font-family)',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <option value="pending">معلق</option>
-                      <option value="confirmed">مؤكد</option>
-                      <option value="completed">مكتمل</option>
-                      <option value="cancelled">ملغي</option>
-                    </select>
-                  </td>
-                  <td>
-                    <button onClick={() => deleteBooking(booking.id)} className="btn-danger" style={{ padding: '4px 10px', fontSize: '12px' }}>
-                      حذف
-                    </button>
-                  </td>
+        <div className="admin-card" style={{ padding: 0, overflow: 'hidden' }}>
+          <div style={{ overflowX: 'auto' }}>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>العميل</th>
+                  <th>الخدمة والمدينة</th>
+                  <th>التاريخ</th>
+                  <th>الحالة</th>
+                  <th>إجراءات</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filtered.map(booking => (
+                  <tr key={booking.id}>
+                    <td>
+                      <div style={{ fontWeight: 700, color: 'white' }}>{booking.name}</div>
+                      <div style={{ fontSize: '12px', opacity: 0.7, direction: 'ltr', textAlign: 'right' }}>{booking.phone}</div>
+                    </td>
+                    <td>
+                      <div style={{ fontSize: '13px' }}>{booking.service_type}</div>
+                      <div style={{ fontSize: '11px', color: 'var(--color-primary)' }}>{booking.city}</div>
+                    </td>
+                    <td>
+                      <div style={{ fontSize: '13px', direction: 'ltr' }}>{booking.booking_date}</div>
+                    </td>
+                    <td>
+                      <select
+                        value={booking.status}
+                        onChange={e => updateStatus(booking.id, e.target.value)}
+                        style={{
+                          padding: '4px 8px',
+                          borderRadius: '8px',
+                          border: '1px solid var(--color-border)',
+                          background: 'rgba(255,255,255,0.05)',
+                          color: 'var(--color-text)',
+                          fontSize: '12px',
+                          fontFamily: 'var(--font-family)',
+                          cursor: 'pointer',
+                          outline: 'none'
+                        }}
+                      >
+                        <option value="pending">معلق</option>
+                        <option value="confirmed">مؤكد</option>
+                        <option value="completed">مكتمل</option>
+                        <option value="cancelled">ملغي</option>
+                      </select>
+                    </td>
+                    <td>
+                      <button onClick={() => deleteBooking(booking.id)} className="btn-danger btn-sm">
+                        <Trash2 size={14} /> حذف
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
