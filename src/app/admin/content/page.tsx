@@ -23,26 +23,17 @@ export default function AdminArticlesPage() {
     status: 'published'
   });
 
-
   useEffect(() => {
     fetchArticles();
   }, []);
 
-
   const fetchArticles = async () => {
-
     setLoading(true);
-
     const res = await fetch('/api/articles');
-
     const data = await res.json();
-
     setArticles(Array.isArray(data) ? data : []);
-
     setLoading(false);
-
   };
-
 
   const handleOpenModal = (article: any = null) => {
 
@@ -53,7 +44,6 @@ export default function AdminArticlesPage() {
     } else {
 
       setFormData({
-
         id: '',
         title: '',
         slug: '',
@@ -61,7 +51,6 @@ export default function AdminArticlesPage() {
         excerpt: '',
         image: '',
         status: 'published'
-
       });
 
     }
@@ -104,19 +93,26 @@ export default function AdminArticlesPage() {
         : 'POST';
 
 
-    const payload: any = {
+    // لا نستخدم delete نهائياً
+    const payload = formData.id
 
-      ...formData
+      ? formData
 
-    };
+      : {
 
+          title: formData.title,
 
-    // حل مشكلة TypeScript
-    if (!payload.id) {
+          slug: formData.slug,
 
-      delete payload.id;
+          content: formData.content,
 
-    }
+          excerpt: formData.excerpt,
+
+          image: formData.image,
+
+          status: formData.status
+
+        };
 
 
     await fetch('/api/articles', {
@@ -150,31 +146,22 @@ export default function AdminArticlesPage() {
 
   const handleDelete = async (id: string) => {
 
-    if (
-      confirm(
-        'هل أنت متأكد من حذف المقال؟'
-      )
-    ) {
+    if (confirm('هل تريد حذف المقال؟')) {
 
-      await fetch(
-        `/api/articles?id=${id}`,
-        {
+      await fetch(`/api/articles?id=${id}`, {
 
-          method: 'DELETE',
+        method: 'DELETE',
 
-          headers: {
+        headers: {
 
-            'Authorization':
-              `Bearer ${
-                localStorage.getItem(
-                  'admin_token'
-                )
-              }`
-
-          }
+          'Authorization':
+            `Bearer ${
+              localStorage.getItem('admin_token')
+            }`
 
         }
-      );
+
+      });
 
       fetchArticles();
 
@@ -198,6 +185,7 @@ export default function AdminArticlesPage() {
     <div>
 
       <div
+
         style={{
 
           display: 'flex',
@@ -210,27 +198,24 @@ export default function AdminArticlesPage() {
           marginBottom: '40px'
 
         }}
+
       >
 
-        <div>
+        <h1
 
-          <h1
-            style={{
+          style={{
 
-              fontSize: '32px',
+            fontSize: '28px',
 
-              fontWeight: 900,
+            fontWeight: 800
 
-              marginBottom: '8px'
+          }}
 
-            }}
-          >
+        >
 
-            إدارة المقالات
+          المقالات
 
-          </h1>
-
-        </div>
+        </h1>
 
 
         <button
@@ -243,9 +228,9 @@ export default function AdminArticlesPage() {
 
         >
 
-          <Plus size={20} />
+          <Plus size={18} />
 
-          إضافة مقال
+          مقال جديد
 
         </button>
 
@@ -254,65 +239,36 @@ export default function AdminArticlesPage() {
 
 
       <div
+
         className="admin-card"
+
         style={{
 
-          marginBottom: '32px',
+          padding: '20px',
 
-          padding: '16px'
+          marginBottom: '30px'
 
         }}
+
       >
 
-        <div
-          style={{
-            position: 'relative'
-          }}
-        >
+        <Search size={18} />
 
-          <Search
-            size={18}
-            style={{
+        <input
 
-              position: 'absolute',
+          className="input-saas"
 
-              right: '16px',
+          placeholder="بحث"
 
-              top: '50%',
+          value={searchTerm}
 
-              transform:
-                'translateY(-50%)'
+          onChange={e =>
+            setSearchTerm(
+              e.target.value
+            )
+          }
 
-            }}
-          />
-
-          <input
-
-            type="text"
-
-            placeholder="بحث"
-
-            className="input-saas"
-
-            style={{
-
-              width: '100%',
-
-              paddingRight: '48px'
-
-            }}
-
-            value={searchTerm}
-
-            onChange={e =>
-              setSearchTerm(
-                e.target.value
-              )
-            }
-
-          />
-
-        </div>
+        />
 
       </div>
 
@@ -320,118 +276,53 @@ export default function AdminArticlesPage() {
 
       {loading ? (
 
-        <div
-          style={{
-
-            display: 'flex',
-
-            justifyContent:
-              'center',
-
-            padding: '100px'
-
-          }}
-        >
-
-          <Loader2
-            className="animate-spin"
-            size={40}
-          />
-
-        </div>
+        <Loader2
+          className="animate-spin"
+        />
 
       ) : (
 
         <div
+
           style={{
 
             display: 'grid',
 
-            gridTemplateColumns:
-              'repeat(auto-fill,minmax(300px,1fr))',
-
-            gap: '24px'
+            gap: '20px'
 
           }}
+
         >
 
-          {filteredArticles.map(article => (
+          {filteredArticles.map(a => (
 
             <div
-
-              key={article.id}
-
+              key={a.id}
               className="admin-card"
-
-              style={{
-
-                padding: '24px',
-
-                display: 'flex',
-
-                flexDirection:
-                  'column',
-
-                gap: '16px'
-
-              }}
             >
 
-              <h3
-                style={{
+              <h3>{a.title}</h3>
 
-                  fontSize: '18px',
-
-                  fontWeight: 800
-
-                }}
+              <button
+                onClick={() =>
+                  handleOpenModal(a)
+                }
               >
 
-                {article.title}
+                تعديل
 
-              </h3>
+              </button>
 
 
-
-              <div
-                style={{
-
-                  display: 'flex',
-
-                  gap: '10px'
-
-                }}
+              <button
+                onClick={() =>
+                  handleDelete(a.id)
+                }
               >
 
-                <button
-                  className="btn-saas"
-                  onClick={() =>
-                    handleOpenModal(
-                      article
-                    )
-                  }
-                >
+                حذف
 
-                  تعديل
-
-                </button>
-
-
-
-                <button
-                  className="btn-saas"
-                  onClick={() =>
-                    handleDelete(
-                      article.id
-                    )
-                  }
-                >
-
-                  حذف
-
-                </button>
-
-              </div>
+              </button>
 
             </div>
 
@@ -447,110 +338,11 @@ export default function AdminArticlesPage() {
 
         {isModalOpen && (
 
-          <div
-            style={{
+          <div>
 
-              position: 'fixed',
-
-              inset: 0,
-
-              zIndex: 1000,
-
-              display: 'flex',
-
-              justifyContent:
-                'center',
-
-              alignItems: 'center'
-
-            }}
-          >
-
-            <motion.div
-
-              initial={{ opacity: 0 }}
-
-              animate={{ opacity: 1 }}
-
-              exit={{ opacity: 0 }}
-
-              onClick={() =>
-                setIsModalOpen(false)
-              }
-
-              style={{
-
-                position: 'absolute',
-
-                inset: 0,
-
-                background:
-                  'rgba(0,0,0,0.6)'
-
-              }}
-            />
-
-
-
-            <motion.div
-
-              initial={{
-                opacity: 0,
-                scale: 0.9
-              }}
-
-              animate={{
-                opacity: 1,
-                scale: 1
-              }}
-
-              exit={{
-                opacity: 0,
-                scale: 0.9
-              }}
-
-              className="admin-card"
-
-              style={{
-
-                position: 'relative',
-
-                width: '100%',
-
-                maxWidth: '700px',
-
-                padding: '40px',
-
-                zIndex: 1001
-
-              }}
-            >
-
-              <h2
-                style={{
-
-                  fontSize: '22px',
-
-                  fontWeight: 900,
-
-                  marginBottom: '20px'
-
-                }}
-              >
-
-                {formData.id
-                  ? 'تعديل'
-                  : 'مقال جديد'}
-
-              </h2>
-
-
+            <motion.div>
 
               <input
-
-                className="input-saas"
-
-                placeholder="العنوان"
 
                 value={formData.title}
 
@@ -564,34 +356,6 @@ export default function AdminArticlesPage() {
 
 
               <textarea
-
-                className="input-saas"
-
-                placeholder="الوصف"
-
-                value={formData.excerpt}
-
-                onChange={e =>
-                  setFormData({
-
-                    ...formData,
-
-                    excerpt:
-                      e.target.value
-
-                  })
-                }
-
-              />
-
-
-              <textarea
-
-                className="input-saas"
-
-                rows={6}
-
-                placeholder="المحتوى"
 
                 value={formData.content}
 
@@ -611,8 +375,6 @@ export default function AdminArticlesPage() {
 
               <FileUploader
 
-                label="الصورة"
-
                 value={formData.image}
 
                 onChange={url =>
@@ -629,18 +391,10 @@ export default function AdminArticlesPage() {
 
 
               <button
-
-                className="btn-saas btn-saas-primary"
-
                 onClick={handleSave}
-
-                disabled={saving}
-
               >
 
-                {saving
-                  ? 'جارٍ الحفظ'
-                  : 'حفظ'}
+                حفظ
 
               </button>
 
