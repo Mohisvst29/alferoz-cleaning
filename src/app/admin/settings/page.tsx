@@ -218,7 +218,7 @@ export default function AdminSettingsPage() {
           {activeTab === 'branding' && (
             <div className="admin-card">
               <h3 style={{ fontSize: '18px', fontWeight: 800, marginBottom: '24px' }}>الهوية البصرية</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '32px' }}>
                 <div>
                   <FileUploader label="شعار الموقع (Logo)" value={settings?.logo} onChange={u => setSettings((prev: any) => ({...prev, logo: u}))} aspectRatio="2/1" />
                   <div style={{ marginTop: '16px' }}>
@@ -290,7 +290,7 @@ export default function AdminSettingsPage() {
           {activeTab === 'contact' && (
             <div className="admin-card">
               <h3 style={{ fontSize: '18px', fontWeight: 800, marginBottom: '24px' }}>بيانات التواصل</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
                 <div><label className="admin-label">رقم الجوال</label><input className="input-saas" value={settings?.phone || ''} onChange={e => setSettings({...settings, phone: e.target.value})} /></div>
                 <div style={{ gridColumn: 'span 2' }}><label className="admin-label">البريد الإلكتروني</label><input className="input-saas" value={settings?.email || ''} onChange={e => setSettings({...settings, email: e.target.value})} /></div>
                 <div style={{ gridColumn: 'span 2' }}><label className="admin-label">نص التذييل (Footer Copy)</label><input className="input-saas" value={settings?.footerText || ''} onChange={e => setSettings({...settings, footerText: e.target.value})} /></div>

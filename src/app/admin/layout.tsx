@@ -32,15 +32,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, [pathname, router]);
 
-  // Handle auto-collapse on smaller screens
+  // Let CSS handle media queries for sidebar, no aggressive JS collapsing
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 1024) setCollapsed(true);
-      else setCollapsed(false);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    // Only use collapsed state to allow manual desktop toggling
+    if (window.innerWidth < 1024) setCollapsed(false);
   }, []);
 
   if (pathname === '/admin/login') return <>{children}</>;
