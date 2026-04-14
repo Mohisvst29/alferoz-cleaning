@@ -5,15 +5,25 @@ import FileUploader from '@/components/admin/FileUploader';
 import { Plus, Search, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+type Article = {
+  id?: string;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string;
+  image: string;
+  status: string;
+};
+
 export default function AdminArticlesPage() {
 
-  const [articles, setArticles] = useState<any[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Article>({
     id: '',
     title: '',
     slug: '',
@@ -41,7 +51,7 @@ export default function AdminArticlesPage() {
 
   };
 
-  const handleOpenModal = (article: any = null) => {
+  const handleOpenModal = (article?: Article) => {
 
     if (article) {
 
@@ -73,12 +83,16 @@ export default function AdminArticlesPage() {
         .replace(/[\s\W-]+/g, '-');
 
     setFormData({
+
       ...formData,
+
       title: val,
+
       slug:
         formData.id
           ? formData.slug
           : slug
+
     });
 
   };
@@ -92,16 +106,18 @@ export default function AdminArticlesPage() {
         ? 'PUT'
         : 'POST';
 
-    const payload: any =
+    const payload: Partial<Article> =
       formData.id
         ? formData
         : {
+
             title: formData.title,
             slug: formData.slug,
             content: formData.content,
             excerpt: formData.excerpt,
             image: formData.image,
             status: formData.status
+
           };
 
     await fetch('/api/articles', {
@@ -109,11 +125,14 @@ export default function AdminArticlesPage() {
       method,
 
       headers: {
+
         'Content-Type': 'application/json',
+
         Authorization:
           `Bearer ${
             localStorage.getItem('admin_token')
           }`
+
       },
 
       body: JSON.stringify(payload)
@@ -128,7 +147,9 @@ export default function AdminArticlesPage() {
 
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id?: string) => {
+
+    if (!id) return;
 
     if (confirm('هل تريد حذف المقال؟')) {
 
@@ -169,8 +190,7 @@ export default function AdminArticlesPage() {
       <div
         style={{
           display: 'flex',
-          justifyContent:
-            'space-between',
+          justifyContent: 'space-between',
           alignItems: 'center',
           marginBottom: '40px'
         }}
@@ -187,9 +207,7 @@ export default function AdminArticlesPage() {
 
         <button
           className="btn-saas btn-saas-primary"
-          onClick={() =>
-            handleOpenModal()
-          }
+          onClick={() => handleOpenModal()}
         >
           <Plus size={18} />
           مقال جديد
@@ -297,6 +315,19 @@ export default function AdminArticlesPage() {
                   setFormData({
                     ...formData,
                     content:
+                      e.target.value
+                  })
+                }
+              />
+
+
+              <textarea
+                placeholder="وصف مختصر"
+                value={formData.excerpt}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    excerpt:
                       e.target.value
                   })
                 }
