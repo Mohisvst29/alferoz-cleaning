@@ -77,17 +77,22 @@ export default function AdminSettingsPage() {
         body: JSON.stringify(bodyData),
       });
       
-      const responseData = await res.json();
+      const responseData = await res.json().catch(() => ({}));
       if (res.ok) {
         if (activeTab !== 'seo' && activeTab !== 'account') setSettings(responseData);
         setShowSuccess(true);
         if (activeTab === 'account') setAdminData(prev => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }));
         setTimeout(() => setShowSuccess(false), 3000);
       } else {
-        setError(responseData.error || `خطأ ${res.status}: فشل الحفظ`);
+        if (res.status === 413) {
+          setError('حجم البيانات كبير جداً. يرجى التأكد من عدم استخدام صور ضخمة أو فيديوهات بدون Supabase.');
+        } else {
+          setError(responseData.error || `خطأ ${res.status}: فشل الحفظ`);
+        }
       }
     } catch (err) {
-      setError('تعذر الاتصال بالخادم');
+      console.error('Save Error:', err);
+      setError('تعذر الاتصال بالخادم. تأكد من جودة الإنترنت أو صغر حجم الصور المرفوعة.');
     } finally {
       setSaving(false);
     }
