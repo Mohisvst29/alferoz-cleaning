@@ -311,21 +311,25 @@ body {
 }
 
 /* ─── Admin Dashboard ──────────────────────────────────────────────── */
+.mobile-admin-header { display: none; }
+
 @media (max-width: 1200px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
   .charts-grid { grid-template-columns: 1fr !important; }
 }
 @media (max-width: 1024px) {
   .admin-sidebar {
-    left: -280px;
+    right: -280px;
+    left: auto !important;
     width: 280px !important;
     transition: 0.3s ease-in-out;
     background: #0f172a !important;
   }
   .admin-sidebar.mobile-open {
-    left: 0;
+    right: 0;
   }
   .admin-main {
+    margin-right: 0 !important;
     margin-left: 0 !important;
     padding-top: 100px !important;
     padding: 20px !important;

@@ -66,7 +66,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Mobile Header Toggle */}
       <div className="mobile-admin-header" style={{ 
-        display: 'none', position: 'fixed', top: 0, left: 0, right: 0, height: '64px',
+        position: 'fixed', top: 0, left: 0, right: 0, height: '64px',
         background: 'rgba(15, 23, 42, 0.9)', backdropFilter: 'blur(10px)', 
         borderBottom: '1px solid var(--color-border)', zIndex: 60, padding: '0 20px',
         alignItems: 'center', justifyContent: 'space-between'
@@ -82,7 +82,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         animate={{ width: collapsed ? 80 : 280 }}
         className={`admin-sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}
         style={{ 
-          position: 'fixed', top: 0, bottom: 0, left: 0, zIndex: 50,
+          position: 'fixed', top: 0, bottom: 0, right: 0, zIndex: 50,
           display: 'flex', flexDirection: 'column', padding: '24px 16px'
         }}
       >
@@ -122,7 +122,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content */}
       <main style={{ 
         flex: 1, 
-        marginLeft: collapsed ? 80 : 280, 
+        marginRight: collapsed ? 80 : 280, 
         padding: '40px',
         transition: '0.3s'
       }} className="admin-main">
